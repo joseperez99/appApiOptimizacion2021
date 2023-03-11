@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="stylesheet.css">
+        <script src="https://kit.fontawesome.com/80167f1620.js" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="loadList.js"></script>
+	</head>
+	<body>
+		<div id="content">
+			<header>
+				<hgroup>
+					<h1>API MOEA Framework</h1>
+				</hgroup>
+				<nav>
+					<ul>
+						<li> <a href="index.html"> Inicio </a> </li>
+						<li> <a href="execute.html"> Ejecutar </a> </li>
+						<li> <a href="manage.html"> Administrar </a> </li>
+					</ul>
+				</nav>
+			</header>
+			<SECTION>
+				<div id="textPr">
+					<article>
+						<hgroup>
+							<h1>API MOEA Framework - Práctica 2021 - LyOA - LCC - FCEFyN - UNSJ </h1>
+						</hgroup>
+					</article>
+
+                    <div class="wrap">
+                        <ul class="tabs">
+                            <li> <a href="#tab1"><span class="fas fa-map-marker-alt"></span><span class="tab-text">Paradas</span></a> </li>
+                            <li> <a href="#tab2"><span  class="fas fa-route"></span><span class="tab-text">Recorridos</span></a> </li>
+                            <li> <a href="#tab3"><span  class="fas fa-bus"></span><span class="tab-text">Compañias</span></a> </li>
+                        </ul>
+                    </div>
+                    <div class="selections">
+
+                        <article id="tab1">
+                            <h2> Datos de Paradas de Transporte</h2>
+					        <table class="stops-table" tabindex="0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" id="id" title="ID">ID</th>
+                                        <th scope="col" id="name" title="Nombre">Nombre</th>
+                                        <th scope="col" id="city" title="Ciudad">Ciudad</th>
+                                        <th scope="col" id="province" title="Provincia">Provincia</th>
+                                        <th scope="col" id="country" title="Pais">Pais</th>
+                                        <th scope="col" id="ranking" title="Rank">Rank</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stopsList">
+                                </tbody>
+                            </table>
+                            <div id="errStops" class="error"></div>
+                            <script>loadStopsList()</script>
+                        </article>
+
+                        <article id="tab2">
+                            <h2> Datos de Recorridos</h2>
+                            <table class="frames-table" tabindex="0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" id="id" title="ID">ID</th>
+                                        <th scope="col" id="idTransportCompany" title="idCompaniaDeTransporte">ID Compañia de Transporte</th>
+                                        <th scope="col" id="idStopDeparture" title="IdParadaSalida">ID de la Parada de Salida</th>
+                                        <th scope="col" id="idStopArrival" title="IdParadaLlegada">ID de la Parada de Llegada</th>
+                                        <th scope="col" id="price" title="Precio">Precio</th>
+                                        <th scope="col" id="departureDateTime" title="HorarioSalida">Horario de Salida</th>
+                                        <th scope="col" id="arrivalDateTime" title="HorarioLlegada">Horario de Llegada</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="framesList">
+                                </tbody>
+                            </table>
+                            <div id="errFrames" class="error"></div>
+                            <script>loadFramesList()</script>
+                        </article>
+                        
+                        <article id="tab3">
+                            <h2> Datos de Compañias de Transporte</h2>
+                            <table class="companies-table" tabindex="0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" id="id" title="ID">ID</th>
+                                        <th scope="col" id="name" title="Nombre">Nombre</th>
+                                         <th scope="col" id="logo" title="Logo">Logo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="companiesList">
+                                </tbody>
+                            </table>
+                            <div id="errCompanies" class="error"></div>
+                            <script>loadCompaniesList()</script>    
+                        </article>
+                    </div>
+				</div>
+			</SECTION>
+		</div>
+		<!--
+		<div id="elem"></div>
+		<script src="main.js"></script>
+		-->
+	</body>

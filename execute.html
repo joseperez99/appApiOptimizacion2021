@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="stylesheet.css">
+		<link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+	</head>
+	<body>
+		<div id="content">
+			<header>
+				<hgroup>
+					<h1>API MOEA Framework</h1>
+				</hgroup>
+				<nav>
+					<ul>
+						<li><a href="index.html">Inicio</a></li>
+						<li><a href="ejecutar.html">Ejecutar</a></li>
+						<li> <a href="manage.html"> Administrar </a> </li>
+					</ul>
+				</nav>
+			</header>
+			<SECTION>
+				<div id="textPr">
+					<article>
+						<hgroup>
+							<h1>API MOEA Framework - Práctica 2021 - LyOA - LCC - FCEFyN - UNSJ </h1>
+						</hgroup>
+						<p>
+							Generar un recorido que permita a un turista visitar hasta 5 ciudades de argentina por el menor precio y tiempo.
+						</p>
+					</article>
+					
+					<div class="stops-Selector">
+						<div class="wrapper" id="0">
+							<div class="select-btn">
+								<span>Seleccione una estacion</span>
+								<i class="uil uil-angle-down"></i>
+							</div>
+							<div class="content">
+								<div class="search">
+									<i class="uil uil-search"></i>
+									<input type="text" placeholder="Search">
+								</div>
+								<ul class="options"></ul>
+							</div>
+						</div>
+						<div class="wrapper" id="1">
+							<div class="select-btn">
+								<span>Seleccione una estacion</span>
+								<i class="uil uil-angle-down"></i>
+							</div>
+							<div class="content">
+								<div class="search">
+									<i class="uil uil-search"></i>
+									<input type="text" placeholder="Search">
+								</div>
+								<ul class="options"></ul>
+							</div>
+						</div>
+						<div class="wrapper" id="2">
+							<div class="select-btn">
+								<span>Seleccione una estacion</span>
+								<i class="uil uil-angle-down"></i>
+							</div>
+							<div class="content">
+								<div class="search">
+									<i class="uil uil-search"></i>
+									<input type="text" placeholder="Search">
+								</div>
+								<ul class="options"></ul>
+							</div>
+						</div>
+						<div class="wrapper" id="3">
+							<div class="select-btn">
+								<span>Seleccione una estacion</span>
+								<i class="uil uil-angle-down"></i>
+							</div>
+							<div class="content">
+								<div class="search">
+									<i class="uil uil-search"></i>
+									<input type="text" placeholder="Search">
+								</div>
+								<ul class="options"></ul>
+							</div>
+						</div>
+						<div class="wrapper" id="4">
+							<div class="select-btn">
+								<span>Seleccione una estacion</span>
+								<i class="uil uil-angle-down"></i>
+							</div>
+							<div class="content">
+								<div class="search">
+									<i class="uil uil-search"></i>
+									<input type="text" placeholder="Search">
+								</div>
+								<ul class="options"></ul>
+							</div>
+						</div>
+					</div>
+					<div id="errStops" class="error"></div>
+					<div id="errTransportsCompanies" class="error"></div>
+					<div class="solution">
+						<div id="solution"></div>
+						<button class="button-30" role="button" id="btEjecute" onclick="loadSolution()">Calcular Ruta</button>
+					<div>
+				</div>
+			</SECTION>
+			<div id="loader" class="load" style="visibility: hidden; opacity: 0;">
+				<div class="pacmanLoadingio-spinner-bean-eater-6a2bpxquv8v">
+					<div class="ldio-uqsmpv17qr">
+						<div>
+							<div></div>
+							<div></div>
+							<div></div>
+						</div>
+					<div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="execute.js"></script>
+	</body>
