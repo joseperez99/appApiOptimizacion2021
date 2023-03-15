@@ -1,12 +1,6 @@
-const urlRun = "http://localhost:8080/algorithm/run?ids=";
 var myInit = {method: 'GET', mode: 'cors'};
 
-const wrappers = document.querySelectorAll(".wrapper");
-const selectBtns = [];  wrappers.forEach( wrapper => selectBtns.push(wrapper.querySelector(".select-btn")));
-const searchInps = [];  wrappers.forEach(wrapper => searchInps.push(wrapper.querySelector("input")));
-const options = [];     wrappers.forEach(wrapper => options.push(wrapper.querySelector(".options")));
-
-/* GET STOPS */
+/* ------------------------ GET STOPS ------------------------ */
 const urlStops = "http://localhost:8080/stops";
 let elementStopsErr = document.getElementById('errStops');
 var stopsObjects = [];
@@ -18,11 +12,14 @@ fetch(urlStops, myInit)
         stopsObjects.push(stop);
         stopsNames.push(`${stop.name}, ${stop.city}, ${stop.province}`)
     }
-    options.forEach((option,id) => addStopsNames(id));
+    updateWrappers();
 })
-.catch(err => { elementStopsErr.innerHTML = `<p> Error Loading Stops: ${err}</p>`; });
+.catch(err => { 
+    elementStopsErr.innerHTML = `<p> Error Loading Stops: ${err}</p>`;
+});
+/* ---------------------------------------------------------- */
 
-/* GET TRANSPORTS COMPANIES */
+/* ---------------- GET TRANSPORTS COMPANIES ---------------- */
 const urlCompanies = "http://localhost:8080/transportCompanies";
 let elementTransportsCompaniesErr = document.getElementById('errTransportsCompanies');
 var transportCompaniesObjects = [];
@@ -34,36 +31,101 @@ fetch(urlCompanies, myInit)
     }
 })
 .catch(err => { elementTransportsCompaniesErr.innerHTML = `<p> Error Loading Transports Companies: ${err}</p>`; });
+/* ---------------------------------------------------------- */
 
-/* OPTIONS SELECTORS */
-function addStopsNames(id){
-    options[id].innerHTML=""; 
+/* --------------------- Define Events ---------------------- */
+function eventDeployContent(evt){
+    let  wrapper = evt.currentTarget.wrapper;
+    wrapper.classList.toggle("active");
+}
+
+function eventSearch(evt){
+    let  wrapper = evt.currentTarget.wrapper;
+    let arr = [];
+    let searchedVal = wrapper.querySelector(".search input").value.toLowerCase();
+    arr = stopsNames.filter(data => {
+        return data.toLowerCase().includes(searchedVal);
+    }).map(data => `<li onclick="updateStopSelected(this)">${data}</li>`).join("");
+
+    wrapper.querySelector(".options").innerHTML = arr ? arr: `<p>Oops! Estacion no encontrada</p>`;
+}
+
+function eventDeleteWrapper(evt){
+    let  wrapper = evt.currentTarget.wrapper;
+    document.querySelector(".stops-Selector").removeChild(wrapper);
+    updateWrappers();
+}
+
+function eventAddWrapper(evt){
+    evt.currentTarget.parentElement.insertAdjacentHTML('beforebegin', evt.currentTarget.newWrapper);
+    updateWrappers();
+}
+/* ---------------------------------------------------------- */
+
+let wrappers;
+
+function updateWrappers(){
+    
+    wrappers = document.querySelectorAll(".wrapper");
+
+    wrappers.forEach(wrapper => 
+        {
+            /* Deploy Wrapper Content */
+            wrapper.querySelector(".select-btn").addEventListener("click", eventDeployContent);
+            wrapper.querySelector(".select-btn").wrapper = wrapper;
+            
+            /* Load Stop Options */
+            addStopsNames(wrapper);
+
+            /* Search Stops */
+            wrapper.querySelector(".search input").addEventListener("keyup", eventSearch);
+            wrapper.querySelector(".search input").wrapper = wrapper;
+            /* Remove Wrapper */
+            try{
+                wrapper.querySelector(".remove-wrapper button").addEventListener("click", eventDeleteWrapper);
+                wrapper.querySelector(".remove-wrapper button").wrapper = wrapper;
+            }catch (e) {}
+        }
+    );
+}
+  
+let addWrapper = document.querySelector(".add-wrapper button");
+addWrapper.addEventListener("click", eventAddWrapper);
+addWrapper.newWrapper = `<div class="wrapper">
+                            <div class="wrapper-title"></div>
+                            <div class="stop-selector">
+                                <div class="select-btn">
+                                    <span>Seleccione una estacion</span>
+                                    <i class="uil uil-angle-down"></i>
+                                </div>
+                                <div class="content">
+                                    <div class="search">
+                                        <i class="uil uil-search"></i>
+                                        <input type="text" placeholder="Search">
+                                    </div>
+                                    <ul class="options"></ul>
+                                </div>
+                            </div>
+                            <div class="remove-wrapper">
+                                <button class="uil uil-trash-alt"></button>
+                            </div>
+                        </div>`;
+                       
+function addStopsNames(wrapper){
+    wrapper.querySelector(".options").innerHTML=""; 
     stopsNames.forEach(stopName => {
-        let li = `<li onclick="updateName(${id}, this)">${stopName}</li>`;
-        options[id].insertAdjacentHTML("beforeend", li);
+        let li = `<li onclick="updateStopSelected(this)">${stopName}</li>`;
+        wrapper.querySelector(".options").insertAdjacentHTML("beforeend", li);
     })
 }
 
-function updateName(id, selectedLi){
-    searchInps[id].value = "";
-    addStopsNames(id);
-    wrappers[id].classList.remove("active");
-    selectBtns[id].firstElementChild.innerText = selectedLi.innerText;
+function updateStopSelected(selectedLi){
+    let wrapper = selectedLi.parentElement.parentElement.parentElement.parentElement
+    wrapper.querySelector(".search input").value = "";
+    addStopsNames(wrapper);
+    wrapper.classList.remove("active");
+    wrapper.querySelector(".select-btn").firstElementChild.innerText = selectedLi.innerText;
 }
-
-searchInps.forEach((searchInp, id) => searchInp.addEventListener("keyup", () =>{
-    let arr = [];
-    let searchedVal = searchInp.value.toLowerCase();
-    arr = stopsNames.filter(data => {
-        return data.toLowerCase().includes(searchedVal);
-    }).map(data => `<li onclick="updateName(${id}, this)">${data}</li>`).join("");
-
-    options[id].innerHTML = arr ? arr: `<p>Oops! Estacion no encontrada</p>`;
-}));
-
-selectBtns.forEach((selectBtn,id) => selectBtn.addEventListener("click", () => {
-    wrappers[id].classList.toggle("active");
-}));
 
 /* TIME DIFF */
 function timeDiff(departureTime, arrivalTime){
@@ -77,124 +139,136 @@ function timeDiff(departureTime, arrivalTime){
 
 /* EXECUTION */
 function loadSolution() {
+    if(document.querySelector("#stop-departure .select-btn").firstElementChild.textContent == "Seleccione una estacion"){
+        window.alert("[ERROR]: Ingrese un origen");
+    }
+    else if (document.querySelector("#stop-arrival .select-btn").firstElementChild.textContent == "Seleccione una estacion"){
+        window.alert("[ERROR]: Ingrese un destino");
+    }
+    else{
 
-    let loadCont = document.getElementById('loader');
-    let element = document.getElementById('solution');
-    
-    loadCont.style.visibility = "visible"
-    loadCont.style.opacity= "1";
+        let loadCont = document.querySelector("#loader");
+        let solution = document.querySelector("#solution");
 
-    let stopsSelected = [];
-    selectBtns.forEach( selectBtn => {
-        if (selectBtn.firstElementChild.textContent != 'Seleccione una estacion'){
-            stopsSelected.push(selectBtn.firstElementChild.textContent)
-        }
-    });
+        loadCont.style.visibility = "visible"
+        loadCont.style.opacity= "1";
 
-    let ids = stopsSelected.map(stopSelected => {
-        let name = stopSelected.split(', ')
-        let stop = stopsObjects.find(stopObject => (stopObject.name == name[0] && stopObject.city == name[1] && stopObject.province == name[2]))
-        try{ return stop.id;}
-        catch (e) { return -1;}
-        
-    })
-    
-    urlRequest = urlRun + ids.join(',')
-    fetch(urlRequest, myInit)
-    .then(response => response.json())
-    .then(data =>
-        {
-            let totalPrice = 0;
-            let totalTime = 0;
-            let htmlToInsert =  "<div class='travel-itinerary'>"+
-                                    `<p class='MilkyShake-h2'>Itinerario de Viaje</p>`;
-            for(x of data){
-
-                totalPrice += x.price;
-                let duration = timeDiff(x.departureDateTime, x.arrivalDateTime);
-                totalTime += duration;
-
-                stopDeparture = stopsObjects.find(stopObject => (stopObject.id == x.idStopDeparture))
-                stopArrival = stopsObjects.find(stopObject => (stopObject.id == x.idStopArrival))
-                transportCompany = transportCompaniesObjects.find(transportCompanyObjects => (transportCompanyObjects.id == x.idTransportCompany))
-
-                htmlToInsert =  htmlToInsert +
-                                    `<div class="frame">`+
-                                        `<div class="company-logo">`+
-                                            `<img src='${transportCompany.logo}' onerror=this.src='noLogo.jpg'>`+
-                                        `</div>`+
-                                        `<ul class="frame-info">`+
-                                            `<li class="company-name">`+
-                                                `<p>`+
-                                                    `<span class="boldTxt">Empresa: </span>`+
-                                                    `<span class="italicTxt">${transportCompany.name}</span>`+
-                                                `</p>`+
-                                            `</li>`+
-                                            `<li class="stop-departure">`+
-                                                `<p>`+
-                                                    `<span class="boldTxt">Origen: </span>`+
-                                                    `<span class="italicTxt">${stopDeparture.name}, ${stopDeparture.city}</span>`+
-                                                `</p>`+
-                                            `</li>`+
-                                            `<li class="stop-arrival">`+
-                                                `<p>`+
-                                                    `<span class="boldTxt">Llegada: </span>`+
-                                                    `<span class="italicTxt">${stopArrival.name}, ${stopArrival.city}</span>`+
-                                                `</p>`+
-                                            `</li>`+
-                                            `<li class="price">`+
-                                                `<p>`+
-                                                    `<span class="boldTxt">Precio del pasaje: </span>`+
-                                                    `<span class="italicTxt">$${x.price}</span>`+
-                                                `</p>`+
-                                            `</li>`+
-                                            `<li class="category">`+
-                                                `<p>`+
-                                                    `<span class="boldTxt">Categoria: </span>`+
-                                                    `<span class="italicTxt">${x.category}</span>`+
-                                                `</p>`+
-                                            `</li>`+
-                                            `<li class="departure-datetime">`+
-                                                `<p>`+
-                                                    `<span class="boldTxt">Horario de partida: </span>`+
-                                                    `<span class="italicTxt">${x.departureDateTime}</span>`+
-                                                `</p>`+
-                                            `</li>`+
-                                            `<li class="arrival-datetime">`+
-                                                `<p>`+
-                                                    `<span class="boldTxt">Horario de llegada: </span>`+
-                                                    `<span class="italicTxt">${x.arrivalDateTime}</span>`+
-                                                `</p>`+
-                                            `</li>`+
-                                            `<li class="arrival-datetime">`+
-                                                `<p>`+
-                                                    `<span class="boldTxt">Duracion: </span>`+
-                                                    `<span class="italicTxt">${Math.trunc(duration/60)}h${duration%60}</span>`+
-                                                `</p>`+
-                                            `</li>`+
-                                        `</ul>`+
-                                    `</div>`
-                                };
-            htmlToInsert =  htmlToInsert + 
-                                    `<div class="totalCost">`+
-                                        `<p>`+
-                                            `<span class="boldTxt">Costo total: </span>`+
-                                            `<span class="italicTxt">$${totalPrice}</span>`+
-                                        `</p>`+
-                                        `<p>`+
-                                            `<span class="boldTxt">Duracion total: </span>`+
-                                            `<span class="italicTxt">${Math.trunc((totalTime/60))}h${(totalTime%60)}</span>`+
-                                        `</p>`+
-                                    `</div>`
-                                "</div>";
-            element.innerHTML=htmlToInsert;
-            loadCont.style.visibility = "hidden";
-            loadCont.style.opacity= "0";
-        })
-    .catch(err => 
-        {
-            element.innerHTML= `<p>No hay conexion con el Servidor ${err}</p>`;
-            loadCont.style.visibility = "hidden";
-            loadCont.style.opacity= "0";
+        let stopsSelected = [];
+        wrappers.forEach(wrapper => {
+            if (wrapper.querySelector(".select-btn").firstElementChild.textContent != 'Seleccione una estacion'){
+                stopsSelected.push(wrapper.querySelector(".select-btn").firstElementChild.textContent);
+            }
         });
+
+        let ids = stopsSelected.map(stopSelected => {
+            let name = stopSelected.split(', ')
+            let stop = stopsObjects.find(stopObject => (stopObject.name == name[0] && stopObject.city == name[1] && stopObject.province == name[2]))
+            try{ return stop.id;}
+            catch (e) { return -1;}
+        })
+        const urlRun = "http://localhost:8080/algorithm/run?ids=";
+        urlRequest = urlRun + ids.join(',')
+        fetch(urlRequest, myInit)
+        .then(response => response.json())
+        .then(data =>
+            {
+                let totalPrice = 0;
+                let totalTime = 0;
+                let htmlToInsert =  `<div class='travel-itinerary'>
+                                        <p class='MilkyShake-h2'>Itinerario de Viaje</p>`;
+                for(x of data){
+
+                    totalPrice += x.price;
+                    let duration = timeDiff(x.departureDateTime, x.arrivalDateTime);
+                    totalTime += duration;
+
+                    stopDeparture = stopsObjects.find(stopObject => (stopObject.id == x.idStopDeparture))
+                    stopArrival = stopsObjects.find(stopObject => (stopObject.id == x.idStopArrival))
+                    transportCompany = transportCompaniesObjects.find(transportCompanyObjects => (transportCompanyObjects.id == x.idTransportCompany))
+
+                    htmlToInsert =  htmlToInsert +
+                                    `<div class="frame">
+                                        <div class="company-logo">
+                                            <img src='${transportCompany.logo}' onerror=this.src='noLogo.jpg'>
+                                        </div>
+                                        <ul class="frame-info">
+                                            <li class="company-name">
+                                                <p>
+                                                    <span class="boldTxt">Empresa: </span>
+                                                    <span class="italicTxt">${transportCompany.name}</span>
+                                                </p>
+                                            </li>
+                                            <li class="stop-departure">
+                                                <p>
+                                                    <span class="boldTxt">Origen: </span>
+                                                    <span class="italicTxt">${stopDeparture.name}, ${stopDeparture.city}</span>
+                                                </p>
+                                            </li>
+                                            <li class="stop-arrival">
+                                                <p>
+                                                    <span class="boldTxt">Llegada: </span>
+                                                    <span class="italicTxt">${stopArrival.name}, ${stopArrival.city}</span>
+                                                </p>
+                                            </li>
+                                            <li class="price">
+                                                <p>
+                                                    <span class="boldTxt">Precio del pasaje: </span>
+                                                    <span class="italicTxt">$${x.price}</span>
+                                                </p>
+                                            </li>
+                                            <li class="category">
+                                                <p>
+                                                    <span class="boldTxt">Categoria: </span>
+                                                    <span class="italicTxt">${x.category}</span>
+                                                </p>
+                                            </li>
+                                            <li class="departure-datetime">
+                                                <p>
+                                                    <span class="boldTxt">Horario de partida: </span>
+                                                    <span class="italicTxt">${x.departureDateTime}</span>
+                                                </p>
+                                            </li>
+                                            <li class="arrival-datetime">
+                                                <p>
+                                                    <span class="boldTxt">Horario de llegada: </span>
+                                                    <span class="italicTxt">${x.arrivalDateTime}</span>
+                                                </p>
+                                            </li>
+                                            <li class="arrival-datetime">
+                                                <p>
+                                                    <span class="boldTxt">Duracion: </span>
+                                                    <span class="italicTxt">${Math.trunc(duration/60)}h${duration%60}</span>
+                                                </p>
+                                            </li>
+                                        </ul>
+                                    </div>`
+                                    
+                };
+                htmlToInsert =  htmlToInsert + 
+                                        `<div class="totalCost">
+                                            <p>
+                                                <span class="boldTxt">Costo total: </span>
+                                                <span class="italicTxt">$${totalPrice}</span>
+                                            </p>
+                                            <p>
+                                                <span class="boldTxt">Duracion total: </span>
+                                                <span class="italicTxt">${Math.trunc((totalTime/60))}h${(totalTime%60)}</span>
+                                            </p>
+                                        </div>`
+                                    "</div>";
+                solution.innerHTML=htmlToInsert;
+                loadCont.style.visibility = "hidden";
+                loadCont.style.opacity= "0";
+            }
+        ).catch(err => 
+            {
+                solution.innerHTML= `<p>No hay conexion con el Servidor ${err}</p>`;
+                loadCont.style.visibility = "hidden";
+                loadCont.style.opacity= "0";
+            }
+        );
+    };
 }
+
+
+

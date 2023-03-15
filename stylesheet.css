@@ -302,7 +302,7 @@ a
 
 
 /* CSS para los selectores de paradas */
-/* Import Google Font - Poppins */
+/* Import Google Font - Poppins 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 *{
   margin: 0;
@@ -310,14 +310,46 @@ a
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
+*/
 
 .stops-Selector{
   color: #1d1d1d;
+  align-items: center;
 }
 
 .wrapper{
-  width: 370px;
-  margin: 30px auto 0;
+  display: flex;
+  margin: 15px auto 15px;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrapper-title{
+  min-width: 158px;
+  display: flex;
+  align-items: center;
+  margin: auto;
+  margin-right: 0px;
+  justify-content: right;
+}
+
+.wrapper-title i{
+  font-size: 31px;
+  border-radius: 7px;
+  color: #649efb;
+}
+
+.wrapper-title p{
+  font-size: 31px;
+  color: #649efb;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.stop-selector{
+  width: 500px;
+  margin: 0px;
+  align-items: center;
 }
 
 .select-btn, .options li{
@@ -352,6 +384,31 @@ a
   background: #fff;
 }
 
+.remove-wrapper{
+  min-width: 158px;
+  display: flex;
+  align-items: center;
+  margin: auto;
+  margin-left: 10px;
+  justify-content: left;
+}
+
+.remove-wrapper button{
+  font-size: 31px;
+  padding: 5px;
+  border-radius: 7px;
+}
+
+.add-wrapper{
+  padding: 10px;
+}
+
+.add-wrapper button{
+  padding: 5px;
+  font-size: 31px;
+  border-radius: 7px;
+}
+
 .wrapper.active .content{
   display: block;
 }
@@ -359,7 +416,7 @@ a
 .content .search{
   position: relative;
 }
-
+ 
 .search i{
   left: 15px;
   color: #999;
@@ -370,7 +427,7 @@ a
 
 .search input{
   height: 53px;
-  width: 100%;
+  width: 86%;
   outline:  none;
   font-size: 17px;
   border-radius: 5px;
@@ -379,6 +436,7 @@ a
 }
 
 .content .options{
+  padding: 0px;
   margin-top: 10px;
   max-height: 250px;
   overflow-y: auto;
@@ -417,11 +475,23 @@ a
   color: black;
 }
 
+.frame-info{
+  margin: 0px;
+  padding: 0px;
+}
+
 .frame-info li{
+  margin: 0px;
+  padding: 0px;
   display: flex;
   cursor: pointer;
   align-items: center;
   text-align: left;
+}
+
+.frame-info p{
+  margin: 0px;
+  padding: 0px;
 }
 
 .totalCost{
